@@ -17,7 +17,7 @@ export class OpenAiService {
   async createChatCompletion(prompt: string): Promise<string> {
     try {
       const response = await this.openAiClient.completionWithRetry({
-        model: 'text-davinci-003',
+        model: 'gpt-3.5-turbo',
         messages: [{ role: 'user', content: prompt }],
       });
       const choice = response.choices[0];
