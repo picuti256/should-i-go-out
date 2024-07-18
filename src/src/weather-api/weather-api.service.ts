@@ -40,16 +40,16 @@ export class WeatherApiService {
   }
 
   goOut(weatherData: any) {
-    return `O dia está agradavel hoje para um passeio! Temos temperatura de ${weatherData.tempeture}°C, com umidade do ar de ${weatherData.humidity}%, sem probabilidade de chuva e ventos de ${weatherData.wind}m/s`;
+    return `The weather is pleasant today for a walk! We have a temperature of ${weatherData.temperature}°C, with a humidity level of ${weatherData.humidity}%, no chance of rain, and winds at ${weatherData.wind}m/s`;
   }
 
   stayIn(weatherData: any) {
-    return `Talvez seja melhor ficar em casa hoje. A temperatura é de hoje é ${
-      weatherData.tempeture
-    }°C, com umidade do ar de ${weatherData.humidity}%, ${
+    return `It might be better to stay home today. The temperature today is ${
+      weatherData.temperature
+    }°C, with a humidity level of ${weatherData.humidity}%, ${
       weatherData.rain
-        ? `Com probabilidade de chuva de ${weatherData.rain}%`
-        : 'sem probabilidade de chuva'
-    } e com ventos de ${weatherData.wind}m/s`;
+        ? `With the problably the ${weatherData.rain}%`
+        : 'With no rain today'
+    } and winds at ${weatherData.wind}m/s`;
   }
 }
