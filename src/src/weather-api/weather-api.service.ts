@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import Config from '../configs/config';
 import axios from 'axios';
+import Config from '../configs/config';
 import logger from '../utils/logger.util';
 
 @Injectable()
@@ -12,44 +12,35 @@ export class WeatherApiService {
       const response = await axios.get(
         `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${this.apiKey}&lang=pt_br`,
       );
-      return response;
+      return response.data;
     } catch (err) {
-      logger.error(err);
-      throw new Error(err);
+      logger.error('Error fetching weather data:', err);
+      throw new Error('Failed to fetch weather data.');
     }
   }
 
-  async checkWeatherConditions(city: string) {
-    const response = await axios.get(
-      `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${this.apiKey}&lang=pt_br`,
-    );
-
-    const weatherData = response.data;
-
-    const tempeture = weatherData.main.temp;
-    const humidity = weatherData.main.humidity;
-    const wind = weatherData.wind.speed;
-    const rain = weatherData.weather[0].rain;
-
-    const goodWeather =
-      tempeture < 25 && humidity < 80 && rain === 0 && wind < 5;
-
-    return goodWeather
-      ? this.goOut({ tempeture, humidity, wind })
-      : this.stayIn({ tempeture, humidity, wind, rain });
+  async getTemperature(city: string): Promise<number> {
+    try {
+      const response = await axios.get(
+        `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${this.apiKey}&lang=pt_br`,
+      );
+      return response.data.main.temp;
+    } catch (err) {
+      logger.error('Error fetching temperature:', err);
+      throw new Error('Failed to fetch temperature.');
+    }
   }
 
-  goOut(weatherData: any) {
-    return `The weather is pleasant today for a walk! We have a temperature of ${weatherData.temperature}°C, with a humidity level of ${weatherData.humidity}%, no chance of rain, and winds at ${weatherData.wind}m/s`;
-  }
-
-  stayIn(weatherData: any) {
-    return `It might be better to stay home today. The temperature today is ${
-      weatherData.temperature
-    }°C, with a humidity level of ${weatherData.humidity}%, ${
-      weatherData.rain
-        ? `With the problably the ${weatherData.rain}%`
-        : 'With no rain today'
-    } and winds at ${weatherData.wind}m/s`;
+  async getRainProbability(city: string): Promise<string> {
+    try {
+      const response = await axios.get(
+        `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${this.apiKey}&lang=pt_br`,
+      );
+      const rain = response.data.weather[0].main === 'Rain' ? 'Yes' : 'No';
+      return rain;
+    } catch (err) {
+      logger.error('Error fetching rain probability:', err);
+      throw new Error('Failed to fetch rain probability.');
+    }
   }
 }
